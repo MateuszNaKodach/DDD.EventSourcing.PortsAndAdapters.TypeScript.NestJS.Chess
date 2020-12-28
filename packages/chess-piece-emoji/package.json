@@ -1,0 +1,64 @@
+{
+  "name": "@ddd-es-ts-chess/chess-piece-emoji",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "tsc": "tsc",
+    "build": "tsc",
+    "start:dev": "tsc --watch",
+    "publish": "lerna run tsc && lerna publish",
+    "prebuild": "rimraf dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "awesome-typescript-loader": "5.2.1",
+    "deep-equal": "2.0.3",
+    "jest-extended": "0.11.5",
+    "lodash": "4.17.20",
+    "source-map-loader": "1.1.0",
+    "ts-loader": "8.0.3",
+    "ts-pattern": "1.1.0",
+    "uuid": "8.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "26.0.14",
+    "@types/lodash": "4.14.161",
+    "@types/uuid": "8.3.0",
+    "jest": "26.5.2",
+    "ts-jest": "26.4.1"
+  },
+  "files": [
+    "src"
+  ],
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "./src/main/**"
+    ],
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ]
+  }
+}

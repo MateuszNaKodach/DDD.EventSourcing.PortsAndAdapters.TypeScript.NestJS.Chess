@@ -1,0 +1,83 @@
+.board-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#board {
+    --board-size: 80vh;
+    width: var(--board-size);
+    height: var(--board-size);
+    display: flex;
+    flex-wrap: wrap;
+    outline: 5px black solid;
+}
+
+.square {
+    --square-size: 10vh;
+    width: var(--square-size);
+    height: var(--square-size);
+    text-align: center;
+    line-height: var(--square-size);
+    font-size: 7.5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.black {
+    color: black;
+}
+
+.white {
+    color: white;
+}
+
+.normal-move {
+    background: rgb(173, 255, 47) !important;
+    border: 2px black solid;
+}
+
+.attack-move {
+    background: rgb(255, 41, 41) !important;
+    border: 2px black solid;
+}
+
+.light {
+    background: rgb(215, 235, 243);
+}
+
+.dark {
+    background: rgb(107, 65, 3);
+}
+
+#undoBtn {
+    display: block;
+    padding: 10px 30px;
+    color: brown;
+    margin-right: 20px;
+    border-radius: 10px;
+    text-decoration: none
+}
+
+.checked-square {
+    border: 4px red solid;
+    background: rgb(238, 215, 10) !important;
+}
+
+.square:hover .app-piece-icon {
+    text-shadow: -8px 0 4px darkseagreen, 0 8px 4px darkseagreen, 8px 0 4px darkseagreen, 0 -8px 4px darkseagreen;
+}
+
+.app-selected-square .app-piece-icon {
+    text-shadow: -8px 0 4px lightgreen, 0 8px 4px lightgreen, 8px 0 4px lightgreen, 0 -8px 4px lightgreen;
+}
+
+#hud {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}

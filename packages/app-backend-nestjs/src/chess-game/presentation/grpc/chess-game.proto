@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package chessgame;
+
+service ChessGameService {
+  rpc StartChessGame (StartChessGameRequest) returns (StartChessGameResponse);
+  rpc MovePieces (stream MovePieceRequest) returns (stream MovePieceResponse);
+  rpc MovePiece (MovePieceRequest) returns (MovePieceResponse);
+}
+
+message StartChessGameRequest {
+  string chessGameId = 1;
+  string whitePlayerId = 2;
+  string blackPlayerId = 3;
+  string correlationId = 15;
+}
+
+message StartChessGameResponse {
+  bool success = 1;
+  string chessGameId = 2;
+  string correlationId = 15;
+}
+
+message MovePieceRequest {
+  string chessGameId = 1;
+  string fromSquare = 2;
+  string toSquare = 3;
+  string correlationId = 15;
+}
+
+message MovePieceResponse {
+  bool success = 1;
+  string chessGameId = 2;
+  string correlationId = 15;
+}

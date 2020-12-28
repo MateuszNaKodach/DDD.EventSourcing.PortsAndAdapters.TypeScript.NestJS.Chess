@@ -1,0 +1,44 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "preclean": "rimraf **/.cache && rimraf packages/**/dist && rimraf **/coverage && rimraf **/*-lock.json && rimraf **/*.lock && rimraf **/node_modules",
+    "clean": "lerna run clean",
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "test:cov": "lerna run test:cov",
+    "bootstrap": "lerna bootstrap",
+    "start:dev": "lerna run start:dev --stream --parallel",
+    "start:frontend:vanillajs": "parcel -p 1234 packages/app-frontend-vanilla-js/index.html",
+    "start:frontend:vanillajs:dev": "parcel -p 1234 watch packages/app-frontend-vanilla-js/index.html"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "rimraf": "3.0.2",
+    "typescript": "4.0.2"
+  },
+  "devDependencies": {
+    "@ts-tools/build": "2.1.1",
+    "@ts-tools/node": "2.1.1",
+    "@types/jest": "26.0.14",
+    "@typescript-eslint/eslint-plugin": "4.0.1",
+    "@typescript-eslint/parser": "4.0.1",
+    "eslint": "7.7.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-import": "2.22.0",
+    "jest": "26.5.2",
+    "jest-extended": "0.11.5",
+    "lerna": "3.22.1",
+    "parcel-bundler": "1.12.4",
+    "prettier": "2.1.1",
+    "rimraf": "3.0.2",
+    "ts-jest": "26.4.1",
+    "ts-node": "9.0.0",
+    "tsconfig-paths": "3.9.0",
+    "webpack": "4.44.1",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0"
+  }
+}

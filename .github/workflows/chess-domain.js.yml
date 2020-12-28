@@ -1,0 +1,42 @@
+name: chess-domain
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Use Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: npx lerna bootstrap
+      - run: npx lerna run build
+      - name: ♟♙ PAWN | Moves implementation
+        run: npx lerna run test:piece:pawn --scope=@ddd-es-ts-chess/chess-domain
+      - name: ♞♘ KNIGHT | Moves implementation
+        run: npx lerna run test:piece:knight --scope=@ddd-es-ts-chess/chess-domain
+      - name: ♜♖ ROOK | Moves implementation
+        run: npx lerna run test:piece:queen --scope=@ddd-es-ts-chess/chess-domain
+      - name: ♛♕ QUEEN | Moves implementation
+        run: npx lerna run test:piece:queen --scope=@ddd-es-ts-chess/chess-domain
+      - name: ♚♔ KING | Moves implementation
+        run: npx lerna run test:piece:king --scope=@ddd-es-ts-chess/chess-domain
+      - name: All tests
+        run: npx lerna run test --scope=@ddd-es-ts-chess/chess-domain
+

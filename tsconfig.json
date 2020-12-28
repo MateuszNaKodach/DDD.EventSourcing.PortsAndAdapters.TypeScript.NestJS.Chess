@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noImplicitAny": true,
+    "target": "es2015",
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "commonjs",
+    "strictNullChecks": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "packages/*/cjs",
+    "packages/*/esm",
+    "packages/*/dist"
+  ]
+}

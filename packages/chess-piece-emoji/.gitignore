@@ -1,0 +1,6 @@
+# Project exclude paths
+/node_modules/
+/built/
+/.idea/
+/.vscode/
+/.nyc_output/
