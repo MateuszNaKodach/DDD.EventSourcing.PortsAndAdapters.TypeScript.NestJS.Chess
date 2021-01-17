@@ -19,7 +19,7 @@ export type LastMove = { piece: Piece; from: Square; to: Square; }
  */
 export class ChessBoard {
 
-  private readonly movePieceHandler = new OrdinaryMovePieceHandler(new CastlingMovePieceHandler());
+  private readonly movePieceHandler = new OrdinaryMovePieceHandler(new CastlingMovePieceHandler(new EnPassantMovePieceHandler()));
 
   private constructor(private pieces: { [square: string]: Piece } = {}, readonly lastMove: LastMove | undefined = undefined) {
   }
@@ -234,6 +234,30 @@ class CastlingMovePieceHandler extends MovePieceHandler {
     return isRook(rookPiece) ? {rook: rookPiece, from: rookFrom, to: rookTo} : undefined;
   }
 
+}
+
+class EnPassantMovePieceHandler extends MovePieceHandler {
+
+  handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
+    const enPassantSquare = command.to.transform({row: command.piece.isWhite() ? -1 : 1});
+    const isEnPassantCaptureAttack = enPassantSquare && command.piece.name === "Pawn"
+        && command.from.column.character !== command.to.column.character
+        && chessBoard.pieceOn(command.to) === undefined
+        && chessBoard.pieceOn(enPassantSquare)?.name === "Pawn";
+
+    if (!isEnPassantCaptureAttack) {
+      return {board: chessBoard, moves: []}
+    }
+    const board = chessBoard
+        .withoutPieceOn(enPassantSquare!)
+        .withPieceOn(command.to, command.piece);
+    const pawnMoved = {
+      piece: command.piece,
+      from: command.from,
+      to: command.to
+    };
+    return {board, moves: [pawnMoved]};
+  }
 
 }
 
