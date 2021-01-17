@@ -51,7 +51,8 @@ function pawnPattern(side: Side, chessBoard: ChessBoard, currentSquare: Square):
   ];
   const normalMoves = pawnNormalMoves(chessBoard, currentSquare, normalMovesPattern)
   const captureMoves = pawnCaptureMoves(side, currentSquare, chessBoard, captureMovesPattern);
-  return [...normalMoves, ...captureMoves]
+  const enPassantCaptureMoves = pawnEnPassantCaptureMoves(side, currentSquare, chessBoard);
+  return [...normalMoves, ...captureMoves, ...enPassantCaptureMoves];
 }
 
 function pawnCaptureMoves(side: Side, currentSquare: Square, chessBoard: ChessBoard, [firstMove, ...otherMoves]: MoveDelta[]): Square[] {
@@ -89,4 +90,21 @@ function pawnOnStartingRow(side: Side, currentSquare: Square): boolean {
   } else {
     return false;
   }
+}
+
+function pawnEnPassantCaptureMoves(side: Side, currentSquare: Square, chessBoard: ChessBoard): Square[] {
+  const lastMove = chessBoard.lastMove;
+  if (!lastMove) {
+    return [];
+  }
+  const enPassantAvailable = lastMove.piece.name === "Pawn"
+      && lastMove.piece.side !== side
+      && Math.abs(lastMove.from.row.number - lastMove.to.row.number) == 2
+      && Math.abs(currentSquare.column.number - lastMove.to.column.number) == 1;
+
+  if (!enPassantAvailable) {
+    return [];
+  }
+  const enPassantCaptureSquare = Square.fromAlgebraicNotation(lastMove.to.algebraicNotation).transform({row: lastMove.piece.isWhite() ? -1 : 1});
+  return enPassantCaptureSquare ? [enPassantCaptureSquare] : [];
 }

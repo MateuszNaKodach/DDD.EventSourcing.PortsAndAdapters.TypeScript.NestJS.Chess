@@ -11,6 +11,7 @@ const BOARD_SIZE = 8;
 
 export type PieceOnSquare = { piece: Piece, square: Square };
 type MovePieceResult = { board: ChessBoard, moves: PieceMoved[] };
+export type LastMove = { piece: Piece; from: Square; to: Square; }
 
 /**
  * Szachownica jest niemutowalna (metody nigdy nie zmieniają stanu, ale jeśli modyfikują ustawienie szachów, to zwracają nowy obiekt).
@@ -20,7 +21,7 @@ export class ChessBoard {
 
   private readonly movePieceHandler = new OrdinaryMovePieceHandler(new CastlingMovePieceHandler());
 
-  private constructor(private pieces: { [square: string]: Piece } = {}) {
+  private constructor(private pieces: { [square: string]: Piece } = {}, readonly lastMove: LastMove | undefined = undefined) {
   }
 
   static empty(): ChessBoard {
@@ -69,13 +70,17 @@ export class ChessBoard {
   }
 
   withMovedPiece(piece: Piece, from: Square, to: Square): MovePieceResult {
-    return this.movePieceHandler.handle(this, {piece, from, to});
+    const moveResult = this.movePieceHandler.handle(this, {piece, from, to});
+    const lastMove = moveResult.moves[moveResult.moves.length - 1];
+    return {...moveResult, board: moveResult.board.withLastMove(lastMove)}
   }
 
   afterMove(from: Square, to: Square): ChessBoard {
+    const piece = this.pieceOn(from)!;
     return this.cloneBoard()
         .withoutPieceOn(from)
-        .withPieceOn(to, this.pieceOn(from));
+        .withPieceOn(to, piece)
+        .withLastMove({from, to, piece});
   }
 
   withPieceOn(square: Square, piece: Piece | undefined): ChessBoard {
@@ -91,6 +96,10 @@ export class ChessBoard {
     const clone = this.cloneBoard();
     delete clone.pieces[square.algebraicNotation]
     return clone;
+  }
+
+  withLastMove(lastMove: LastMove): ChessBoard {
+    return this.cloneBoard(lastMove);
   }
 
   pieceOn(square: Square): Piece | undefined {
@@ -143,8 +152,8 @@ export class ChessBoard {
     };
   }
 
-  private cloneBoard(): ChessBoard {
-    return new ChessBoard({...this.pieces});
+  private cloneBoard(lastMove: LastMove | undefined = undefined): ChessBoard {
+    return new ChessBoard({...this.pieces}, lastMove ? lastMove : this.lastMove);
   }
 
   get height(): number {
