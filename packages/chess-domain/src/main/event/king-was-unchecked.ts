@@ -16,4 +16,8 @@ export class KingWasUnchecked extends AbstractChessGameSuccessDomainEvent<KingWa
   static event(chessGameId: ChessGameId, occurredAt: Date, data: KingWasUncheckedData, metadata: EventMetadata): KingWasUnchecked {
     return new KingWasUnchecked(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
   }
+
+  public toString = () : string => {
+    return `KingWasUnchecked{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
+  }
 }

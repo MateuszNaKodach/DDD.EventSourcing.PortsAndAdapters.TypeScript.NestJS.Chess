@@ -3,8 +3,6 @@ import {blackPlayer, given, whitePlayer} from "./chess-game.event-assertions";
 import {Pawn} from "../../main/pieces/pawn";
 import {Side} from "../../main/pieces/side";
 import { PieceWasCaptured } from "../../main/event/piece-was-captured";
-import {KingWasUnchecked} from "../../main/event";
-import {King, Rook} from "../../main/pieces";
 
 describe("Chess Game | Move piece - success with PieceWasCaptured", () => {
 

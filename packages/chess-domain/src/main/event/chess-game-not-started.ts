@@ -11,4 +11,8 @@ export class ChessGameNotStarted extends AbstractChessGameFailureDomainEvent<Che
   static event(chessGameId: ChessGameId, occurredAt: Date, data: ChessGameNotStartedData, metadata: EventMetadata): ChessGameNotStarted {
     return new ChessGameNotStarted(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
   }
+
+  public toString = () : string => {
+    return `ChessGameNotStarted{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
+  }
 }

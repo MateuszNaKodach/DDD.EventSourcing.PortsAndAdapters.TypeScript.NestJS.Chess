@@ -16,4 +16,8 @@ export class PieceWasMoved extends AbstractChessGameSuccessDomainEvent<PieceWasM
   static event(chessGameId: ChessGameId, occurredAt: Date, data: PieceWasMovedData, metadata: EventMetadata): PieceWasMoved {
     return new PieceWasMoved(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
   }
+
+  public toString = () : string => {
+    return `PieceWasMoved{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
+  }
 }

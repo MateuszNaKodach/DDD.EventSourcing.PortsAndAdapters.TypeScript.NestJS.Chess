@@ -13,4 +13,8 @@ export class PawnWasNotPromoted extends AbstractChessGameSuccessDomainEvent<Pawn
   static event(chessGameId: ChessGameId, occurredAt: Date, data: PawnWasNotPromotedData, metadata: EventMetadata): PawnWasNotPromoted {
     return new PawnWasNotPromoted(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
   }
+
+  public toString = () : string => {
+    return `PawnWasNotPromoted{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
+  }
 }

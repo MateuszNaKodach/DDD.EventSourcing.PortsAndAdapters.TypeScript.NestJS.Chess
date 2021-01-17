@@ -1,24 +1,24 @@
-import { ChessBoard } from '../../main/board';
-import { Side } from '../../main/pieces';
-import { ChessGame } from '../../main/game';
-import { ChessGameId } from '../../main/game';
-import { board } from '../domain-test-dsl/fixtures';
-import { EmojiConfiguration } from '@ddd-es-ts-chess/chess-piece-emoji';
-import { TimeProvider } from '@ddd-es-ts-chess/ddd-building-blocks-domain';
-import { Result } from '@ddd-es-ts-chess/ddd-building-blocks-domain';
+import {ChessBoard, LastMove} from '../../main/board';
+import {Side} from '../../main/pieces';
+import {ChessGame} from '../../main/game';
+import {ChessGameId} from '../../main/game';
+import {board} from '../domain-test-dsl/fixtures';
+import {EmojiConfiguration} from '@ddd-es-ts-chess/chess-piece-emoji';
+import {TimeProvider} from '@ddd-es-ts-chess/ddd-building-blocks-domain';
+import {Result} from '@ddd-es-ts-chess/ddd-building-blocks-domain';
 import {
   expectDomainEvent, ExpectedDomainEvent,
 } from '@ddd-es-ts-chess/ddd-building-blocks-domain';
-import { DomainEvent } from '@ddd-es-ts-chess/ddd-building-blocks-domain';
-import { ChessGameDomainEvent } from '../../main/event';
-import { PlayerId } from '../../main/game/player-id';
+import {DomainEvent} from '@ddd-es-ts-chess/ddd-building-blocks-domain';
+import {ChessGameDomainEvent} from '../../main/event';
+import {PlayerId} from '../../main/game/player-id';
 
 export const whitePlayer = PlayerId.of(Side.WHITE);
 export const blackPlayer = PlayerId.of(Side.BLACK);
 
 export function expectChessBoard<T extends DomainEvent>(
-  actual: ChessBoard,
-  expected: ChessBoard,
+    actual: ChessBoard,
+    expected: ChessBoard,
 ) {
   expect(actual).toEqual(expected);
 }
@@ -29,12 +29,12 @@ export const given = (props: { currentSide?: Side, board: ChessBoard | EmojiConf
       return new Date();
     },
   };
-  const chessGame = ChessGame.with({ timeProvider });
+  const chessGame = ChessGame.with({timeProvider});
   chessGame.start({
     chessBoard: props.board instanceof ChessBoard ? props.board : board(props.board),
     id: ChessGameId.generate(),
     startSide: props.currentSide ?? Side.WHITE,
-    players: props.players ?? { white: PlayerId.of(Side.WHITE), black: blackPlayer },
+    players: props.players ?? {white: PlayerId.of(Side.WHITE), black: blackPlayer},
   });
   return new GivenChessGame(chessGame);
 };
@@ -89,6 +89,14 @@ class CommandResultAssertion {
       throw new Error('No board in assertion!');
     }
     expectChessBoard(this.board, expectedBoard);
+    return this;
+  }
+
+  thenLastMove(expectedLastMove: LastMove) {
+    if (!this.board) {
+      throw new Error('No board in assertion!');
+    }
+    expect(this.board.lastMove).toStrictEqual(expectedLastMove);
     return this;
   }
 

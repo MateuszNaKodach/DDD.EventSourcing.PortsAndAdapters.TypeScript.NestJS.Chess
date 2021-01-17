@@ -72,7 +72,7 @@ export class ChessBoard {
   withMovedPiece(piece: Piece, from: Square, to: Square): MovePieceResult {
     const moveResult = this.movePieceHandler.handle(this, {piece, from, to});
     const lastMove = moveResult.moves[moveResult.moves.length - 1];
-    return {...moveResult, board: moveResult.board.withLastMove(lastMove)}
+    return {...moveResult, board: moveResult.board.withLastMove({from: lastMove.from, to: lastMove.to, piece: lastMove.piece})}
   }
 
   afterMove(from: Square, to: Square): ChessBoard {
@@ -239,22 +239,26 @@ class CastlingMovePieceHandler extends MovePieceHandler {
 class EnPassantMovePieceHandler extends MovePieceHandler {
 
   handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
-    const enPassantSquare = command.to.transform({row: command.piece.isWhite() ? -1 : 1});
-    const isEnPassantCaptureAttack = enPassantSquare && command.piece.name === "Pawn"
+    const squareWithPieceToCaptureByEnPassant = command.to.transform({row: command.piece.isWhite() ? -1 : 1});
+    if (!squareWithPieceToCaptureByEnPassant) {
+      return {board: chessBoard, moves: []}
+    }
+    const pawnToCapture: Piece | undefined = chessBoard.pieceOn(squareWithPieceToCaptureByEnPassant);
+    const isEnPassantCaptureAttack = squareWithPieceToCaptureByEnPassant && pawnToCapture && command.piece.name === "Pawn"
         && command.from.column.character !== command.to.column.character
-        && chessBoard.pieceOn(command.to) === undefined
-        && chessBoard.pieceOn(enPassantSquare)?.name === "Pawn";
+        && pawnToCapture.name === "Pawn";
 
     if (!isEnPassantCaptureAttack) {
       return {board: chessBoard, moves: []}
     }
     const board = chessBoard
-        .withoutPieceOn(enPassantSquare!)
+        .withoutPieceOn(squareWithPieceToCaptureByEnPassant!)
         .withPieceOn(command.to, command.piece);
     const pawnMoved = {
       piece: command.piece,
       from: command.from,
-      to: command.to
+      to: command.to,
+      captured: pawnToCapture
     };
     return {board, moves: [pawnMoved]};
   }
