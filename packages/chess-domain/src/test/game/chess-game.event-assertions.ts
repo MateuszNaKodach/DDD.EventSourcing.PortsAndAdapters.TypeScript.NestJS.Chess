@@ -20,7 +20,7 @@ export function expectChessBoard<T extends DomainEvent>(
     actual: ChessBoard,
     expected: ChessBoard,
 ) {
-  expect(actual).toEqual(expected);
+  expect(actual.piecesOnSquares).toEqual(expected.piecesOnSquares);
 }
 
 export const given = (props: { currentSide?: Side, board: ChessBoard | EmojiConfiguration, time?: TimeProvider, players?: { white: PlayerId, black: PlayerId } }): GivenChessGame => {

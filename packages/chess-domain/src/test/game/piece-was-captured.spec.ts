@@ -3,6 +3,7 @@ import {blackPlayer, given, whitePlayer} from "./chess-game.event-assertions";
 import {Pawn} from "../../main/pieces/pawn";
 import {Side} from "../../main/pieces/side";
 import { PieceWasCaptured } from "../../main/event/piece-was-captured";
+import {board} from "../domain-test-dsl/fixtures";
 
 describe("Chess Game | Move piece - success with PieceWasCaptured", () => {
 
@@ -65,7 +66,19 @@ describe("Chess Game | Move piece - success with PieceWasCaptured", () => {
           to: Square.fromAlgebraicNotation("E3")
         }
       }
-    });
+    }).thenBoard(
+        board({
+          8: ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
+          7: ['♟', '♟', '♟', ' ', '♟', '♟', '♟', '♟'],
+          6: [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          5: [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          4: [' ', ' ', ' ', ' ', ' ', '♙', ' ', ' '],
+          3: [' ', ' ', ' ', ' ', '♟', ' ', ' ', ' '],
+          2: ['♙', '♙', '♙', '♙', ' ', ' ', '♙', '♙'],
+          1: ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'],
+          0: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        })
+    );
   });
 
 });
