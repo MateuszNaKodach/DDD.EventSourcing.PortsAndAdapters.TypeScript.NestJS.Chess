@@ -19,7 +19,8 @@ export type LastMove = { piece: Piece; from: Square; to: Square; }
  */
 export class ChessBoard {
 
-  private readonly movePieceHandler = new OrdinaryMovePieceHandler(new CastlingMovePieceHandler(new EnPassantMovePieceHandler()));
+  //TODO: Popsuty castling. Zaleznosc kolejnosci?
+  private readonly movePieceHandler = new OrdinaryMovePieceHandler(new EnPassantMovePieceHandler(new CastlingMovePieceHandler()));
 
   private constructor(private pieces: { [square: string]: Piece } = {}, readonly lastMove: LastMove | undefined = undefined) {
   }
@@ -152,7 +153,7 @@ export class ChessBoard {
     };
   }
 
-  private cloneBoard(lastMove: LastMove | undefined = undefined): ChessBoard {
+  cloneBoard(lastMove: LastMove | undefined = undefined): ChessBoard {
     return new ChessBoard({...this.pieces}, lastMove ? lastMove : this.lastMove);
   }
 
@@ -187,6 +188,10 @@ abstract class MovePieceHandler {
 
 class OrdinaryMovePieceHandler extends MovePieceHandler {
 
+  constructor(next?: MovePieceHandler) {
+    super(next);
+  }
+
   handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
     const capturedPiece = chessBoard.pieceOn(command.to);
     const board = chessBoard
@@ -206,6 +211,10 @@ class OrdinaryMovePieceHandler extends MovePieceHandler {
 }
 
 class CastlingMovePieceHandler extends MovePieceHandler {
+
+  constructor(next?: MovePieceHandler) {
+    super(next);
+  }
 
   handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
     const castlingRook = isKing(command.piece) && this.castlingRook(chessBoard, command.from, command.to);

@@ -107,7 +107,8 @@ function pawnEnPassantCaptureMoves(side: Side, currentSquare: Square, chessBoard
   const enPassantAvailable = lastMove.piece.name === "Pawn"
       && lastMove.piece.side !== side
       && Math.abs(lastMove.from.row.number - lastMove.to.row.number) == 2
-      && Math.abs(currentSquare.column.number - lastMove.to.column.number) == 1;
+      && Math.abs(currentSquare.column.number - lastMove.to.column.number) == 1
+      && Math.abs(currentSquare.row.number - lastMove.to.row.number) == 0;
 
   if (!enPassantAvailable) {
     return [];

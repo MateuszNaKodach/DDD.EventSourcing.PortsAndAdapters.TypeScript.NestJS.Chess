@@ -42,6 +42,8 @@ export namespace ChessBoardMvp {
 
     moveSelectedPiece(pieceMoved: PieceMoved): void;
 
+    removeCapturedPiece(onSquare: Square): void
+
     hideSelectedPieceAvailableMoves(): void;
 
     showPawnPromotionSelection(pawnSquare: Square, pawnSide: Side): void

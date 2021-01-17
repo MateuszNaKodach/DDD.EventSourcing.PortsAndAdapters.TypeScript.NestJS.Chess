@@ -1,6 +1,7 @@
 import {Pawn} from "../../main/pieces";
 import {Side} from "../../main/pieces";
 import {EmojiChessBoardTestCase} from "../domain-test-dsl/board-spec.dsl";
+import {Square} from "../../main/board";
 
 describe('Pawn', () => {
 
@@ -222,6 +223,25 @@ describe('Pawn', () => {
           .whenPick({piece: "♟", on: "A4"})
           .thenNormalMoves(["A3"])
           .thenAttackMoves(["B3"])
+          .assert();
+    })
+
+    //TODO: Change last move!
+    it("can move diagonally if en passant is avaiable", () => {
+      EmojiChessBoardTestCase.givenChessBoard({
+        8: ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
+        7: ['♟', '♟', ' ', '♟', '♟', '♟', ' ', '♟'],
+        6: [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        5: [' ', '♙', '♟', ' ', ' ', ' ', ' ', ' '],
+        4: ['♟', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        3: [' ', ' ', ' ', ' ', ' ', ' ', '♟', ' '],
+        2: ['♙', ' ', '♙', '♙', '♙', '♙', '♙', '♙'],
+        1: ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'],
+        0: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+      }).withLastMove({piece: new Pawn(Side.BLACK), from: Square.fromAlgebraicNotation("C7"), to: Square.fromAlgebraicNotation("C5")})
+          .whenPick({piece: "♙", on: "B5"})
+          .thenNormalMoves(["B6"])
+          .thenAttackMoves(["C6"])
           .assert();
     })
   });
