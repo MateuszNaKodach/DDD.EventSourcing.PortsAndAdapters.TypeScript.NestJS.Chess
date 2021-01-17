@@ -1,6 +1,7 @@
 import {canCapturePiece, MoveDelta, Piece} from "./piece";
 import {Side} from "./side";
 import {ChessBoard, Square} from "../board";
+import {PieceMove} from "./piece-move";
 
 export class Pawn extends Piece {
 
@@ -10,6 +11,13 @@ export class Pawn extends Piece {
 
   getPatternSquares(chessBoard: ChessBoard, currentSquare: Square): Square[] {
     return pawnPattern(this.side, chessBoard, currentSquare)
+  }
+
+  protected getPiecePatternMoves(chessBoard: ChessBoard, currentSquare: Square): PieceMove[] {
+    const patternSquaresMoves = super.getPiecePatternMoves(chessBoard, currentSquare);
+    const enPassantCaptureSquares = pawnEnPassantCaptureMoves(this.side, currentSquare, chessBoard);
+    const enPassantAttackMoves = enPassantCaptureSquares.map(square => PieceMove.attackAt(square))
+    return patternSquaresMoves.concat(enPassantAttackMoves);
   }
 
   isOnTheOppositeEdgeOfTheBoard(currentSquare: Square): boolean {
@@ -51,8 +59,7 @@ function pawnPattern(side: Side, chessBoard: ChessBoard, currentSquare: Square):
   ];
   const normalMoves = pawnNormalMoves(chessBoard, currentSquare, normalMovesPattern)
   const captureMoves = pawnCaptureMoves(side, currentSquare, chessBoard, captureMovesPattern);
-  const enPassantCaptureMoves = pawnEnPassantCaptureMoves(side, currentSquare, chessBoard);
-  return [...normalMoves, ...captureMoves, ...enPassantCaptureMoves];
+  return [...normalMoves, ...captureMoves];
 }
 
 function pawnCaptureMoves(side: Side, currentSquare: Square, chessBoard: ChessBoard, [firstMove, ...otherMoves]: MoveDelta[]): Square[] {
