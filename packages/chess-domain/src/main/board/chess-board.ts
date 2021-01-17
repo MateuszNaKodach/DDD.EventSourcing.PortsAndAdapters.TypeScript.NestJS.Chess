@@ -188,7 +188,7 @@ abstract class MovePieceHandler {
 class OrdinaryMovePieceHandler extends MovePieceHandler {
 
   handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
-    const captured = chessBoard.pieceOn(command.to);
+    const capturedPiece = chessBoard.pieceOn(command.to);
     const board = chessBoard
         .withoutPieceOn(command.from)
         .withPieceOn(command.to, command.piece);
@@ -196,7 +196,10 @@ class OrdinaryMovePieceHandler extends MovePieceHandler {
       piece: command.piece,
       from: command.from,
       to: command.to,
-      captured
+      captured: !capturedPiece ? undefined : {
+        piece: capturedPiece,
+        onSquare: command.to
+      }
     };
     return {board, moves: [pieceMoved]};
   }
@@ -258,7 +261,7 @@ class EnPassantMovePieceHandler extends MovePieceHandler {
       piece: command.piece,
       from: command.from,
       to: command.to,
-      captured: pawnToCapture
+      captured: pawnToCapture ? {piece: pawnToCapture, onSquare: squareWithPieceToCaptureByEnPassant} : undefined
     };
     return {board, moves: [pawnMoved]};
   }

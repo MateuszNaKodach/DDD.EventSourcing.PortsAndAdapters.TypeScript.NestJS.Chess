@@ -58,7 +58,7 @@ describe("Chess Game | Move piece - success with PieceWasCaptured", () => {
       type: PieceWasCaptured,
       data: {
         onSquare: Square.fromAlgebraicNotation("E4"),
-        piece: new Pawn(Side.BLACK),
+        piece: new Pawn(Side.WHITE),
         byMove: {
           piece: new Pawn(Side.BLACK),
           from: Square.fromAlgebraicNotation("D4"),

@@ -9,7 +9,10 @@ export type PieceWasMovedData = {
   piece: Piece;
   from: Square;
   to: Square;
-  captured?: Piece
+  captured?: {
+    piece: Piece,
+    onSquare: Square
+  }
 };
 
 export class PieceWasMoved extends AbstractChessGameSuccessDomainEvent<PieceWasMovedData> {

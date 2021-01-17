@@ -252,8 +252,8 @@ export class ChessGame {
     }
     return PieceWasCaptured.event(this.state.id, this.timeProvider.currentDate(),
       {
-        onSquare: pieceMoved.to,
-        piece: pieceMoved.captured,
+        onSquare: pieceMoved.captured.onSquare,
+        piece: pieceMoved.captured.piece,
         byMove: { piece: pieceMoved.piece, from: pieceMoved.from, to: pieceMoved.to },
       },
       { ...metadata, causationId: CausationId.fromEventId(eventId) },
