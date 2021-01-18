@@ -119,9 +119,8 @@ export class ChessBoard {
 
   get piecesOnSquares(): PieceOnSquare[] {
     return Object.entries(this.pieces)
-        .map(([algebraicSquare, pieceOnSquare]) => {
-          return {piece: pieceOnSquare, square: Square.fromAlgebraicNotation(algebraicSquare)}
-        });
+        .map(([algebraicSquare, pieceOnSquare]) => ({piece: pieceOnSquare, square: Square.fromAlgebraicNotation(algebraicSquare)}))
+        .sort((pieceOnSquare1, pieceOnSquare2) => pieceOnSquare1.square.algebraicNotation.localeCompare(pieceOnSquare2.square.algebraicNotation));
   }
 
   isStalemateFor(side: Side): boolean {
@@ -264,15 +263,19 @@ class EnPassantMovePieceHandler extends MovePieceHandler {
       return {board: chessBoard, moves: []}
     }
     const pawnToCapture: Piece | undefined = chessBoard.pieceOn(squareWithPieceToCaptureByEnPassant);
-    const isEnPassantCaptureAttack = squareWithPieceToCaptureByEnPassant && pawnToCapture && command.piece.name === "Pawn"
+    const isEnPassantCaptureAttack = squareWithPieceToCaptureByEnPassant
+        && pawnToCapture && pawnToCapture.equals(chessBoard.lastMove?.piece)
+        && command.piece.name === "Pawn"
         && command.from.column.character !== command.to.column.character
-        && pawnToCapture.name === "Pawn";
+        && pawnToCapture.name === "Pawn"
+        && pawnToCapture.isOpponentOf(command.piece);
 
     if (!isEnPassantCaptureAttack) {
       return {board: chessBoard, moves: []}
     }
     const board = chessBoard
         .withoutPieceOn(squareWithPieceToCaptureByEnPassant!)
+        .withoutPieceOn(command.from)
         .withPieceOn(command.to, command.piece);
     const pawnMoved = {
       piece: command.piece,
