@@ -242,6 +242,7 @@ class CastlingMovePieceHandler extends MovePieceHandler {
 
 }
 
+//TODO: Refactor
 class EnPassantMovePieceHandler extends MovePieceHandler {
 
   constructor(next?: MovePieceHandler) {

@@ -99,6 +99,7 @@ function pawnOnStartingRow(side: Side, currentSquare: Square): boolean {
   }
 }
 
+//TODO: Extract this logic somehow
 function pawnEnPassantCaptureMoves(side: Side, currentSquare: Square, chessBoard: ChessBoard): Square[] {
   const lastMove = chessBoard.lastMove;
   if (!lastMove) {
