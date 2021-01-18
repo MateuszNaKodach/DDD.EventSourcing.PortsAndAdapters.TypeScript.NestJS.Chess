@@ -58,7 +58,7 @@ export class ChessBoardPresenter implements ChessBoardMvp.Presenter {
 
   eventHandlers: { [key: string]: (event: any) => unknown } = {
     PieceWasCaptured: ({data}: PieceWasCaptured) =>
-        this.view.removeCapturedPiece(data.onSquare),
+        this.view.removeCapturedPiece(data.onSquare, data.piece),
     PieceWasMoved: ({data}: PieceWasMoved) =>
         this.view.moveSelectedPiece(data),
     PieceWasNotMoved: () =>

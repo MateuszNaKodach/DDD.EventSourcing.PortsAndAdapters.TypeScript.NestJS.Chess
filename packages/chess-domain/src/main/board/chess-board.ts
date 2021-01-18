@@ -1,10 +1,6 @@
 import {Square} from "./square";
-import {Bishop, Knight, Pawn, Piece, Queen} from "../pieces";
-import {Side} from "../pieces";
-import {King} from "../pieces";
-import {PieceName} from "../pieces";
+import {Bishop, King, Knight, Pawn, Piece, PieceName, Queen, Rook, Side} from "../pieces";
 import {PieceMoved} from "./move";
-import {Rook} from "../pieces";
 import {isDefined, isNotDefined} from "@ddd-es-ts-chess/ddd-building-blocks-domain";
 
 const BOARD_SIZE = 8;
@@ -19,8 +15,7 @@ export type LastMove = { piece: Piece; from: Square; to: Square; }
  */
 export class ChessBoard {
 
-  //TODO: Popsuty castling. Zaleznosc kolejnosci?
-  private readonly movePieceHandler = new OrdinaryMovePieceHandler(new EnPassantMovePieceHandler(new CastlingMovePieceHandler()));
+  private readonly movePieceHandler = new CastlingMovePieceHandler(new EnPassantMovePieceHandler(new OrdinaryMovePieceHandler()));
 
   private constructor(private pieces: { [square: string]: Piece } = {}, readonly lastMove: LastMove | undefined = undefined) {
   }
@@ -170,7 +165,7 @@ type MovePieceCommand = { piece: Piece, from: Square, to: Square };
 
 abstract class MovePieceHandler {
 
-  constructor(private readonly next?: MovePieceHandler) {
+  protected constructor(protected readonly next?: MovePieceHandler) {
   }
 
   protected abstract handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult
@@ -249,6 +244,19 @@ class CastlingMovePieceHandler extends MovePieceHandler {
 }
 
 class EnPassantMovePieceHandler extends MovePieceHandler {
+
+  constructor(next?: MovePieceHandler) {
+    super(next);
+  }
+
+  handle(chessBoard: ChessBoard, props: MovePieceCommand): MovePieceResult {
+    let result: MovePieceResult = this.handler(chessBoard, props);
+    if (this.next && result.moves.length === 0) {
+      const nextResult = this.next.handle(result.board, props);
+      result = {board: nextResult.board, moves: [...result.moves, ...nextResult.moves]};
+    }
+    return result;
+  }
 
   handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
     const squareWithPieceToCaptureByEnPassant = command.to.transform({row: command.piece.isWhite() ? -1 : 1});

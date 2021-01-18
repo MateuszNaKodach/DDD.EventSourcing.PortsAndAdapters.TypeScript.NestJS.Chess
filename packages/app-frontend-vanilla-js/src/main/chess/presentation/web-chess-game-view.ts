@@ -111,21 +111,23 @@ export default class WebChessGameView implements ChessBoardMvp.View, ChessGameHi
   }
 
   moveSelectedPiece(pieceMoved: PieceMoved): void {
-    this.hidePieceIcon(pieceMoved.from);
+    this.hidePieceIcon(pieceMoved.from, pieceMoved.piece);
     this.showPieceIcon(pieceMoved.to.id, pieceMoved.piece.name, pieceMoved.piece.side);
     this.hideSelectedPieceAvailableMoves();
   }
 
-  removeCapturedPiece(onSquare: Square): void {
-    this.hidePieceIcon(onSquare);
+  removeCapturedPiece(onSquare: Square, piece: Piece): void {
+    this.hidePieceIcon(onSquare, piece);
   }
 
-  private hidePieceIcon(square: Square) {
-    const squareId = square.id;
+  private hidePieceIcon(onSquare: Square, piece: Piece) {
+    const squareId = onSquare.id;
     const squareHtml = document.getElementById(squareId);
     if (squareHtml && squareHtml.parentNode) {
       const squareView = SquareView.fromHtml(squareHtml);
-      squareHtml.parentNode.replaceChild(squareView.withoutPiece().html(), squareHtml);
+      if (piece.equals(squareView.pieceOnSquare)) {
+        squareHtml.parentNode.replaceChild(squareView.withoutPiece().html(), squareHtml);
+      }
     }
   }
 
