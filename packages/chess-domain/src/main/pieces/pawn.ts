@@ -99,7 +99,11 @@ function pawnOnStartingRow(side: Side, currentSquare: Square): boolean {
   }
 }
 
-//TODO: Extract this logic somehow
+/**
+ * TODO: Extract this logic somehow
+ * https://www.chess.com/pl/article/view/bicie-w-przelocie-specjalne-ruchy-w-szachach
+ * https://en.wikipedia.org/wiki/En_passant
+ */
 function pawnEnPassantCaptureMoves(side: Side, currentSquare: Square, chessBoard: ChessBoard): Square[] {
   const lastMove = chessBoard.lastMove;
   if (!lastMove) {

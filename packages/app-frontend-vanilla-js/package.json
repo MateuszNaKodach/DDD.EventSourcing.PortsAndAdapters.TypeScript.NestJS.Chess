@@ -7,7 +7,7 @@
   "scripts": {
     "start": "parcel -p 1234 index.html",
     "start:dev": "parcel -p 1234 watch index.html",
-    "build": "parcel build index.html",
+    "build": "parcel build index.html --public-url ./",
     "test": "jest",
     "test:cov": "jest --coverage",
     "tsc": "tsc",
