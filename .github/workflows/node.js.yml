@@ -29,4 +29,30 @@ jobs:
       - run: npx lerna bootstrap
       - run: npx lerna run build
       - run: npx lerna run test
+      - uses: actions/upload-artifact@v1
+        name: app-frontend-vanilla-js | Upload build as artifact
+        if: always()
+        with:
+          name: app-frontend-vanilla-js-dist
+          path: ./packages/app-frontend-vanilla-js/dist
 
+  deploy-on-github-pages:
+    name: 'app-frontend-vanilla-js | Deploy app to GitHub Pages from feature/en-passant-capture branch source code'
+    if: github.ref == 'refs/heads/feature/en-passant-capture'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: app-frontend-vanilla-js-dist
+          path: ./dist
+      - name: Deploy app as GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3.7.0-6
+        if: ${{ github.event_name != 'pull_request' && always() }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: './dist'
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          force_orphan: true
+          keep_files: false
