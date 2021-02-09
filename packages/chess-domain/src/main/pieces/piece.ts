@@ -14,9 +14,13 @@ export abstract class Piece {
   protected abstract getPatternSquares(chessBoard: ChessBoard, currentSquare: Square): Square[]
 
   getAvailableMoves(chessBoard: ChessBoard, currentSquare: Square): PieceMove[] {
-    return this.getPatternSquares(chessBoard, currentSquare)
-      .map(moveSquare => this.toPieceMove(chessBoard)(moveSquare))
+    return this.getPiecePatternMoves(chessBoard, currentSquare)
       .filter(this.cannotExposeKingOnAttack(chessBoard, currentSquare));
+  }
+
+  protected getPiecePatternMoves(chessBoard: ChessBoard, currentSquare: Square): PieceMove[] {
+    return this.getPatternSquares(chessBoard, currentSquare)
+        .map(moveSquare => this.toPieceMove(chessBoard)(moveSquare));
   }
 
   canMove(chessBoard: ChessBoard, currentSquare: Square): boolean {

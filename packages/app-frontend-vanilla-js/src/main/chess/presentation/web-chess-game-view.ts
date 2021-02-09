@@ -1,7 +1,7 @@
 import {
   ChessBoard,
   isPromotionPieceName,
-  MoveType,
+  MoveType, Piece,
   PieceMove,
   PieceMoved,
   PieceName,
@@ -111,17 +111,23 @@ export default class WebChessGameView implements ChessBoardMvp.View, ChessGameHi
   }
 
   moveSelectedPiece(pieceMoved: PieceMoved): void {
-    this.hidePieceIcon(pieceMoved);
+    this.hidePieceIcon(pieceMoved.from, pieceMoved.piece);
     this.showPieceIcon(pieceMoved.to.id, pieceMoved.piece.name, pieceMoved.piece.side);
     this.hideSelectedPieceAvailableMoves();
   }
 
-  private hidePieceIcon(pieceMoved: PieceMoved) {
-    const squareId = pieceMoved.from.id;
+  removeCapturedPiece(onSquare: Square, piece: Piece): void {
+    this.hidePieceIcon(onSquare, piece);
+  }
+
+  private hidePieceIcon(onSquare: Square, piece: Piece) {
+    const squareId = onSquare.id;
     const squareHtml = document.getElementById(squareId);
     if (squareHtml && squareHtml.parentNode) {
       const squareView = SquareView.fromHtml(squareHtml);
-      squareHtml.parentNode.replaceChild(squareView.withoutPiece().html(), squareHtml);
+      if (piece.equals(squareView.pieceOnSquare)) {
+        squareHtml.parentNode.replaceChild(squareView.withoutPiece().html(), squareHtml);
+      }
     }
   }
 

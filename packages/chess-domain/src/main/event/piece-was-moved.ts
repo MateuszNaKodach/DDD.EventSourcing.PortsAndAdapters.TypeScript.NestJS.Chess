@@ -9,11 +9,18 @@ export type PieceWasMovedData = {
   piece: Piece;
   from: Square;
   to: Square;
-  captured?: Piece
+  captured?: {
+    piece: Piece,
+    onSquare: Square
+  }
 };
 
 export class PieceWasMoved extends AbstractChessGameSuccessDomainEvent<PieceWasMovedData> {
   static event(chessGameId: ChessGameId, occurredAt: Date, data: PieceWasMovedData, metadata: EventMetadata): PieceWasMoved {
     return new PieceWasMoved(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
+  }
+
+  public toString = () : string => {
+    return `PieceWasMoved{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
   }
 }

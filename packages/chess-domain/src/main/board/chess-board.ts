@@ -1,16 +1,13 @@
 import {Square} from "./square";
-import {Bishop, Knight, Pawn, Piece, Queen} from "../pieces";
-import {Side} from "../pieces";
-import {King} from "../pieces";
-import {PieceName} from "../pieces";
+import {Bishop, King, Knight, Pawn, Piece, PieceName, Queen, Rook, Side} from "../pieces";
 import {PieceMoved} from "./move";
-import {Rook} from "../pieces";
 import {isDefined, isNotDefined} from "@ddd-es-ts-chess/ddd-building-blocks-domain";
 
 const BOARD_SIZE = 8;
 
 export type PieceOnSquare = { piece: Piece, square: Square };
 type MovePieceResult = { board: ChessBoard, moves: PieceMoved[] };
+export type LastMove = { piece: Piece; from: Square; to: Square; }
 
 /**
  * Szachownica jest niemutowalna (metody nigdy nie zmieniają stanu, ale jeśli modyfikują ustawienie szachów, to zwracają nowy obiekt).
@@ -18,9 +15,9 @@ type MovePieceResult = { board: ChessBoard, moves: PieceMoved[] };
  */
 export class ChessBoard {
 
-  private readonly movePieceHandler = new OrdinaryMovePieceHandler(new CastlingMovePieceHandler());
+  private readonly movePieceHandler = new CastlingMovePieceHandler(new EnPassantMovePieceHandler(new OrdinaryMovePieceHandler()));
 
-  private constructor(private pieces: { [square: string]: Piece } = {}) {
+  private constructor(private pieces: { [square: string]: Piece } = {}, readonly lastMove: LastMove | undefined = undefined) {
   }
 
   static empty(): ChessBoard {
@@ -69,13 +66,17 @@ export class ChessBoard {
   }
 
   withMovedPiece(piece: Piece, from: Square, to: Square): MovePieceResult {
-    return this.movePieceHandler.handle(this, {piece, from, to});
+    const moveResult = this.movePieceHandler.handle(this, {piece, from, to});
+    const lastMove = moveResult.moves[moveResult.moves.length - 1];
+    return {...moveResult, board: moveResult.board.withLastMove({from: lastMove.from, to: lastMove.to, piece: lastMove.piece})}
   }
 
   afterMove(from: Square, to: Square): ChessBoard {
+    const piece = this.pieceOn(from)!;
     return this.cloneBoard()
         .withoutPieceOn(from)
-        .withPieceOn(to, this.pieceOn(from));
+        .withPieceOn(to, piece)
+        .withLastMove({from, to, piece});
   }
 
   withPieceOn(square: Square, piece: Piece | undefined): ChessBoard {
@@ -91,6 +92,10 @@ export class ChessBoard {
     const clone = this.cloneBoard();
     delete clone.pieces[square.algebraicNotation]
     return clone;
+  }
+
+  withLastMove(lastMove: LastMove): ChessBoard {
+    return this.cloneBoard(lastMove);
   }
 
   pieceOn(square: Square): Piece | undefined {
@@ -114,9 +119,8 @@ export class ChessBoard {
 
   get piecesOnSquares(): PieceOnSquare[] {
     return Object.entries(this.pieces)
-        .map(([algebraicSquare, pieceOnSquare]) => {
-          return {piece: pieceOnSquare, square: Square.fromAlgebraicNotation(algebraicSquare)}
-        });
+        .map(([algebraicSquare, pieceOnSquare]) => ({piece: pieceOnSquare, square: Square.fromAlgebraicNotation(algebraicSquare)}))
+        .sort((pieceOnSquare1, pieceOnSquare2) => pieceOnSquare1.square.algebraicNotation.localeCompare(pieceOnSquare2.square.algebraicNotation));
   }
 
   isStalemateFor(side: Side): boolean {
@@ -143,8 +147,8 @@ export class ChessBoard {
     };
   }
 
-  private cloneBoard(): ChessBoard {
-    return new ChessBoard({...this.pieces});
+  cloneBoard(lastMove: LastMove | undefined = undefined): ChessBoard {
+    return new ChessBoard({...this.pieces}, lastMove ? lastMove : this.lastMove);
   }
 
   get height(): number {
@@ -160,7 +164,7 @@ type MovePieceCommand = { piece: Piece, from: Square, to: Square };
 
 abstract class MovePieceHandler {
 
-  constructor(private readonly next?: MovePieceHandler) {
+  protected constructor(protected readonly next?: MovePieceHandler) {
   }
 
   protected abstract handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult
@@ -178,8 +182,12 @@ abstract class MovePieceHandler {
 
 class OrdinaryMovePieceHandler extends MovePieceHandler {
 
+  constructor(next?: MovePieceHandler) {
+    super(next);
+  }
+
   handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
-    const captured = chessBoard.pieceOn(command.to);
+    const capturedPiece = chessBoard.pieceOn(command.to);
     const board = chessBoard
         .withoutPieceOn(command.from)
         .withPieceOn(command.to, command.piece);
@@ -187,13 +195,20 @@ class OrdinaryMovePieceHandler extends MovePieceHandler {
       piece: command.piece,
       from: command.from,
       to: command.to,
-      captured
+      captured: !capturedPiece ? undefined : {
+        piece: capturedPiece,
+        onSquare: command.to
+      }
     };
     return {board, moves: [pieceMoved]};
   }
 }
 
 class CastlingMovePieceHandler extends MovePieceHandler {
+
+  constructor(next?: MovePieceHandler) {
+    super(next);
+  }
 
   handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
     const castlingRook = isKing(command.piece) && this.castlingRook(chessBoard, command.from, command.to);
@@ -225,6 +240,52 @@ class CastlingMovePieceHandler extends MovePieceHandler {
     return isRook(rookPiece) ? {rook: rookPiece, from: rookFrom, to: rookTo} : undefined;
   }
 
+}
+
+//TODO: Refactor
+class EnPassantMovePieceHandler extends MovePieceHandler {
+
+  constructor(next?: MovePieceHandler) {
+    super(next);
+  }
+
+  handle(chessBoard: ChessBoard, props: MovePieceCommand): MovePieceResult {
+    let result: MovePieceResult = this.handler(chessBoard, props);
+    if (this.next && result.moves.length === 0) {
+      const nextResult = this.next.handle(result.board, props);
+      result = {board: nextResult.board, moves: [...result.moves, ...nextResult.moves]};
+    }
+    return result;
+  }
+
+  handler(chessBoard: ChessBoard, command: MovePieceCommand): MovePieceResult {
+    const squareWithPieceToCaptureByEnPassant = command.to.transform({row: command.piece.isWhite() ? -1 : 1});
+    if (!squareWithPieceToCaptureByEnPassant) {
+      return {board: chessBoard, moves: []}
+    }
+    const pawnToCapture: Piece | undefined = chessBoard.pieceOn(squareWithPieceToCaptureByEnPassant);
+    const isEnPassantCaptureAttack = squareWithPieceToCaptureByEnPassant
+        && pawnToCapture && pawnToCapture.equals(chessBoard.lastMove?.piece)
+        && command.piece.name === "Pawn"
+        && command.from.column.character !== command.to.column.character
+        && pawnToCapture.name === "Pawn"
+        && pawnToCapture.isOpponentOf(command.piece);
+
+    if (!isEnPassantCaptureAttack) {
+      return {board: chessBoard, moves: []}
+    }
+    const board = chessBoard
+        .withoutPieceOn(squareWithPieceToCaptureByEnPassant!)
+        .withoutPieceOn(command.from)
+        .withPieceOn(command.to, command.piece);
+    const pawnMoved = {
+      piece: command.piece,
+      from: command.from,
+      to: command.to,
+      captured: pawnToCapture ? {piece: pawnToCapture, onSquare: squareWithPieceToCaptureByEnPassant} : undefined
+    };
+    return {board, moves: [pawnMoved]};
+  }
 
 }
 

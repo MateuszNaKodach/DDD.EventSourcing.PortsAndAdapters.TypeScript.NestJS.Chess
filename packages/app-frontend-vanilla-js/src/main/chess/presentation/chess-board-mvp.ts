@@ -1,4 +1,4 @@
-import {Square} from "@ddd-es-ts-chess/chess-domain";
+import {Piece, Square} from "@ddd-es-ts-chess/chess-domain";
 import {PieceMoveEffect} from "@ddd-es-ts-chess/chess-domain";
 import {PieceMoved} from "@ddd-es-ts-chess/chess-domain";
 import {PieceWasNotMoved as PieceNotMovedEvent} from "@ddd-es-ts-chess/chess-domain";
@@ -41,6 +41,8 @@ export namespace ChessBoardMvp {
     showSelectedPieceAvailableMoves(availableMoves: PieceMove[]): void;
 
     moveSelectedPiece(pieceMoved: PieceMoved): void;
+
+    removeCapturedPiece(onSquare: Square, piece: Piece): void
 
     hideSelectedPieceAvailableMoves(): void;
 

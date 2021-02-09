@@ -15,4 +15,8 @@ export class StalemateHasOccurred extends AbstractChessGameSuccessDomainEvent<St
   static event(chessGameId: ChessGameId, occurredAt: Date, data: StalemateOccurredData, metadata: EventMetadata): StalemateHasOccurred {
     return new StalemateHasOccurred(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
   }
+
+  public toString = () : string => {
+    return `StalemateHasOccurred{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
+  }
 }

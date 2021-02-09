@@ -16,4 +16,8 @@ export class CheckmateHasOccurred extends AbstractChessGameSuccessDomainEvent<Ch
   static event(chessGameId: ChessGameId, occurredAt: Date, data: CheckmateOccurredData, metadata: EventMetadata): CheckmateHasOccurred {
     return new CheckmateHasOccurred(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
   }
+
+  public toString = () : string => {
+    return `CheckmateHasOccurred{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
+  }
 }

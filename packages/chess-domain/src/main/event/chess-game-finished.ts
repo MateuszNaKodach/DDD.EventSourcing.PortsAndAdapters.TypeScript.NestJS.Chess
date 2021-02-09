@@ -19,4 +19,8 @@ export class ChessGameFinished extends AbstractChessGameSuccessDomainEvent<Chess
   static event(chessGameId: ChessGameId, occurredAt: Date, data: ChessGameFinishedData, metadata: EventMetadata): ChessGameFinished {
     return new ChessGameFinished(DomainEventId.generate(), occurredAt, chessGameId, data, metadata);
   }
+
+  public toString = () : string => {
+    return `ChessGameFinished{chessGameId=${this.chessGameId}, occurredAt=${this.occurredAt}, data=${JSON.stringify(this.data)}, metadata=${JSON.stringify(this.metadata)}}`;
+  }
 }

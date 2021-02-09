@@ -1,5 +1,5 @@
 import {Piece} from "../../main/pieces";
-import {Column, ColumnCharacter, Row, Square} from "../../main/board";
+import {Column, ColumnCharacter, LastMove, Row, Square} from "../../main/board";
 import {ChessBoard} from "../../main/board";
 import {EmojiConfiguration} from "@ddd-es-ts-chess/chess-piece-emoji";
 import {King} from "../../main/pieces";
@@ -30,6 +30,10 @@ export class EmojiChessBoardTestCase {
   static givenChessBoard(emojiConfiguration: EmojiConfiguration): EmojiChessBoardTestCase {
     const chessBoard = new TestChessBoardGenerator(emojiConfiguration).generate();
     return new EmojiChessBoardTestCase(chessBoard, emojiConfiguration);
+  }
+
+  withLastMove(lastMove: LastMove): EmojiChessBoardTestCase {
+    return new EmojiChessBoardTestCase(this.chessBoard.cloneBoard(lastMove), this.emojiConfiguration, this.previous);
   }
 
   testStalemate(side: Side, message = "then is stalemate"): void {

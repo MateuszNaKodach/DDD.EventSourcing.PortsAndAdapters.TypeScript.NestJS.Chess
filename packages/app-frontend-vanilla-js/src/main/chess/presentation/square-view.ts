@@ -50,6 +50,10 @@ export class SquareView {
     return new SquareView(this.square, () => this.piece, this.isChecked, false);
   }
 
+  get pieceOnSquare(): Piece | undefined {
+    return this.piece;
+  }
+
   html(): HTMLElement {
     const squareView: HTMLDivElement = document.createElement("div");
     squareView.id = this.square.id;

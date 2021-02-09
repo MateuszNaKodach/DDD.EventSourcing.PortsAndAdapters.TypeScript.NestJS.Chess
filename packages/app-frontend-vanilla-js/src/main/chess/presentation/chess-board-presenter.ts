@@ -1,5 +1,5 @@
 import {ChessBoardMvp} from "./chess-board-mvp";
-import {Square} from "@ddd-es-ts-chess/chess-domain";
+import {PieceWasCaptured, Square} from "@ddd-es-ts-chess/chess-domain";
 import {PieceWasMoved} from "@ddd-es-ts-chess/chess-domain";
 import {PawnPromotionWasEnabled} from "@ddd-es-ts-chess/chess-domain";
 import {KingWasChecked} from "@ddd-es-ts-chess/chess-domain";
@@ -57,6 +57,8 @@ export class ChessBoardPresenter implements ChessBoardMvp.Presenter {
   }
 
   eventHandlers: { [key: string]: (event: any) => unknown } = {
+    PieceWasCaptured: ({data}: PieceWasCaptured) =>
+        this.view.removeCapturedPiece(data.onSquare, data.piece),
     PieceWasMoved: ({data}: PieceWasMoved) =>
         this.view.moveSelectedPiece(data),
     PieceWasNotMoved: () =>

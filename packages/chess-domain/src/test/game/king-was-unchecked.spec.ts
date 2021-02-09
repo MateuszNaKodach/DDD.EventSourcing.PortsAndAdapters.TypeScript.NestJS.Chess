@@ -35,7 +35,10 @@ describe("Chess Game | Move piece - success with KingWasUnchecked", () => {
           piece: new Rook(Side.BLACK),
           from: Square.fromAlgebraicNotation("C5"),
           to: Square.fromAlgebraicNotation("C3"),
-          captured: new Pawn(Side.WHITE)
+          captured: {
+            piece: new Pawn(Side.WHITE),
+            onSquare: Square.fromAlgebraicNotation("C3")
+          }
         }
       }
     });

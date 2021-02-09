@@ -53,7 +53,10 @@ describe("Chess Game | Move piece - success with PieceWasMoved", () => {
         piece: new Pawn(Side.WHITE),
         from: Square.fromAlgebraicNotation("B2"),
         to: Square.fromAlgebraicNotation("C3"),
-        captured: new Pawn(Side.BLACK)
+        captured: {
+          piece: new Pawn(Side.BLACK),
+          onSquare: Square.fromAlgebraicNotation("C3")
+        }
       }
     });
   });
