@@ -1,9 +1,9 @@
-import { DomainEvent } from "../event/domain-event";
-import { AggregateId } from "../aggregate/aggregate-id.valueobject";
-import { AggregateVersion } from "../aggregate/aggregate-version.valueobject";
-import { Result } from "../result/result";
-import { AbstractFailureDomainEvent } from "../event/abstract-failure-domain-event";
-import { TimeProvider } from "../time/time-provider";
+import { DomainEvent } from '../event';
+import { AggregateId } from '../aggregate';
+import { AggregateVersion } from '../aggregate';
+import { Result } from '../result';
+import { AbstractFailureDomainEvent } from '../event';
+import { TimeProvider } from '../time';
 
 const INTERNAL_EVENTS = Symbol();
 

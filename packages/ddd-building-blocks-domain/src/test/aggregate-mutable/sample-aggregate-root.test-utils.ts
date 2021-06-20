@@ -1,10 +1,10 @@
-import { AbstractDomainEvent } from "../../main/event";
-import { DomainEventId } from "../../main/event";
-import { AggregateId } from "../../main/aggregate";
-import { AbstractMutableAggregateRoot } from "../../main/aggregate-mutable";
-import { TimeProvider } from "../../main/time";
-import { EventMetadata } from "../../main/event";
-import { CausationId } from "../../main/event";
+import { AbstractDomainEvent } from '../../main';
+import { DomainEventId } from '../../main';
+import { AggregateId } from '../../main';
+import { AbstractMutableAggregateRoot } from '../../main';
+import { TimeProvider } from '../../main';
+import { EventMetadata } from '../../main';
+import { CausationId } from '../../main';
 
 export class SampleAggregateId implements AggregateId {
   private readonly TYPE = "SampleAggregateId";

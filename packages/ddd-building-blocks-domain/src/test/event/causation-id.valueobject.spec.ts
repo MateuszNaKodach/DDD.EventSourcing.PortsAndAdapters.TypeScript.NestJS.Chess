@@ -1,4 +1,4 @@
-import {CausationId, DomainEventId} from "../../main/event";
+import {CausationId, DomainEventId} from '../../main';
 
 describe("Causation id", () => {
 

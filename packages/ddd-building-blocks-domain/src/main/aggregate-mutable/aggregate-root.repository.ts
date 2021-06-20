@@ -1,5 +1,5 @@
 import { AbstractMutableAggregateRoot } from "./abstract-mutable-aggregate-root";
-import { AggregateId } from "../aggregate/aggregate-id.valueobject";
+import { AggregateId } from '../aggregate';
 
 export interface AggregateRootRepository<I extends AggregateId, T extends AbstractMutableAggregateRoot<I>> {
   save(aggregate: T): Promise<void>;

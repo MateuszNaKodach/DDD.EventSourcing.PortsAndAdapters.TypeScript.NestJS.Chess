@@ -5,7 +5,7 @@ export class DomainEvents<T extends DomainEvent = DomainEvent> {
   private constructor(private readonly _events: T[]) {
   }
 
-  static clean<E extends DomainEvent = DomainEvent>() {
+  static clean<E extends DomainEvent = DomainEvent>(): DomainEvents<E> {
     return new DomainEvents<E>([]);
   }
 

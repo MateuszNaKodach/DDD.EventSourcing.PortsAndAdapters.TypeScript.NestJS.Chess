@@ -14,7 +14,7 @@ export type ExpectedDomainEvent<T extends DomainEvent> = {
 export function expectDomainEvent<T extends DomainEvent>(
     eventsSource: AbstractMutableAggregateRoot<any> | { events: DomainEvent[] },
     expected: ExpectedDomainEvent<T>
-) {
+): void {
   const domainEvents = eventsSource instanceof AbstractMutableAggregateRoot
     ? eventsSource.getUncommittedEvents().filter(it => isDomainEvent(it))
     : eventsSource.events;

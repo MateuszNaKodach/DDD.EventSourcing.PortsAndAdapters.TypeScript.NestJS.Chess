@@ -1,6 +1,6 @@
-import { AggregateId } from "../aggregate/aggregate-id.valueobject";
+import { AggregateId } from '../aggregate';
 import { AbstractDomainEvent } from "./abstract-domain-event";
-import { FailureReason } from "../result/failure-reason";
+import { FailureReason } from '../result';
 import { EventMetadata } from "./domain-event";
 
 export abstract class AbstractFailureDomainEvent<

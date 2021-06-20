@@ -1,6 +1,6 @@
-import { Result } from "../../main/result";
+import { Result } from '../../main';
 import { SampleAggregateId, SampleDomainEvent } from "../aggregate-mutable/sample-aggregate-root.test-utils";
-import { CausationId } from "../../main/event";
+import { CausationId } from '../../main';
 import 'jest-extended';
 
 describe('Feature: Aggregate command result', () => {

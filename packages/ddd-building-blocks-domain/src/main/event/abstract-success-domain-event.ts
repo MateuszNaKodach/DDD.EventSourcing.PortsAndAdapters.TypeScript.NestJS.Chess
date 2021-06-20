@@ -1,4 +1,4 @@
-import { AggregateId } from "../aggregate/aggregate-id.valueobject";
+import { AggregateId } from '../aggregate';
 import { AbstractDomainEvent } from "./abstract-domain-event";
 import { EventMetadata } from "./domain-event";
 

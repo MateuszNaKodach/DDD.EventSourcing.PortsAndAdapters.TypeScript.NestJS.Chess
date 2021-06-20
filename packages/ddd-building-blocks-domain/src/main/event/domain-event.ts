@@ -1,4 +1,4 @@
-import { AggregateId } from "../aggregate/aggregate-id.valueobject";
+import { AggregateId } from '../aggregate';
 import { DomainEventId } from "./domain-event-id.valueobject";
 import { CausationId } from "./causation-id.valueobject";
 import { CorrelationId } from "./correlation-id.valueobject";
