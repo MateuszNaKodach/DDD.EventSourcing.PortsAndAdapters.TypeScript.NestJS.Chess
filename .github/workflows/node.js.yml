@@ -37,8 +37,8 @@ jobs:
           path: ./packages/app-frontend-vanilla-js/dist
 
   deploy-on-github-pages:
-    name: 'app-frontend-vanilla-js | Deploy app to GitHub Pages from master branch source code'
-    if: github.ref == 'refs/heads/master'
+    name: 'app-frontend-vanilla-js | Deploy app to GitHub Pages from fix-page branch source code'
+    if: github.ref == 'refs/heads/fix-page'
     needs: build
     runs-on: ubuntu-latest
     steps:

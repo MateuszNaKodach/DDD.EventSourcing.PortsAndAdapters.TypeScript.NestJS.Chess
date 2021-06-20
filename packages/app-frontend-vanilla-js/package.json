@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "src/main/main.ts",
+  "homepage": "https://nowakprojects.github.io/DDD.EventSourcing.PortsAndAdapters.TypeScript.NestJS.Chess",
   "private": true,
   "scripts": {
     "start": "parcel -p 1234 index.html",
